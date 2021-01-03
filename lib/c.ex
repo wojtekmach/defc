@@ -7,7 +7,8 @@ defmodule C do
 
       import C, only: [defc: 3]
 
-      defp init_nifs() do
+      @doc false
+      def init_nifs() do
         path = Path.join([unquote(Mix.Project.compile_path()), "..", "lib", "#{__MODULE__}"])
         :erlang.load_nif(path, 0)
       end
@@ -48,7 +49,16 @@ defmodule C do
 
     i = Path.join([:code.root_dir(), "usr", "include"])
 
-    0 =
-      Mix.shell().cmd("cc -bundle -flat_namespace -undefined suppress -o #{so} #{c_src} -I #{i}")
+    cc =
+      case :os.type() do
+        {:unix, :darwin} ->
+          "gcc -bundle -flat_namespace -undefined suppress"
+
+        {:unix, :linux} ->
+          "gcc -shared"
+      end
+
+    cmd = "#{cc} -o #{so} #{c_src} -I #{i}"
+    0 = Mix.shell().cmd(cmd)
   end
 end
