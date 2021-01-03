@@ -1,8 +1,9 @@
 defmodule C do
-  defmacro __using__(_) do
+  defmacro __using__(opts) do
     quote do
       @on_load :init_nifs
       @before_compile C
+      @opts unquote(opts)
       Module.register_attribute(__MODULE__, :defs, accumulate: true)
 
       import C, only: [defc: 3]
@@ -27,6 +28,7 @@ defmodule C do
 
   def __before_compile__(env) do
     defs = Module.get_attribute(env.module, :defs)
+    opts = Module.get_attribute(env.module, :opts)
 
     c_src = Path.join([Mix.Project.compile_path(), "..", "c_src", "#{env.module}.c"])
     File.mkdir_p!(Path.dirname(c_src))
@@ -58,7 +60,7 @@ defmodule C do
           "gcc -shared"
       end
 
-    cmd = "#{cc} -o #{so} #{c_src} -I #{i}"
+    cmd = "#{cc} -o #{so} #{c_src} -I #{i} #{opts[:compile]}"
     0 = Mix.shell().cmd(cmd)
   end
 end
