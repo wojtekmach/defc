@@ -11,7 +11,7 @@ defmodule C do
       @doc false
       def init_nifs() do
         path = Path.join([unquote(Mix.Project.compile_path()), "..", "lib", "#{__MODULE__}"])
-        :erlang.load_nif(path, 0)
+        :ok = :erlang.load_nif(path, 0)
       end
     end
   end
