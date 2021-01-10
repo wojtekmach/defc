@@ -43,7 +43,7 @@ defmodule C do
 
     static ErlNifFunc nif_funcs[] =
     {
-    #{Enum.map_join(defs, ", ", fn {name, arity, _} -> "{\"#{name}\", #{arity}, hello}" end)}
+    #{Enum.map_join(defs, ", ", fn {name, arity, _} -> "{\"#{name}\", #{arity}, #{name}}" end)}
     };
 
     ERL_NIF_INIT(#{env.module}, nif_funcs, NULL, NULL, NULL, NULL)
