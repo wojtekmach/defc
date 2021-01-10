@@ -21,6 +21,7 @@ defmodule C do
       @defs {unquote(name), unquote(arity), unquote(body)}
 
       def unquote(name)(unquote_splicing(Macro.generate_arguments(arity, nil))) do
+        _ = [unquote_splicing(Macro.generate_arguments(arity, nil))]
         :erlang.nif_error("NIF library not loaded")
       end
     end
