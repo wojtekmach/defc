@@ -1,8 +1,14 @@
 defmodule CmarkTest do
   use ExUnit.Case, async: true
-  doctest Cmark
+  # doctest Cmark
 
   test "it works" do
-    assert Cmark.markdown_to_html("hello") == "<p>hello</p>\n"
+    markdown = "  - foo\n  - bar\n"
+    :ok = Cmark.global_parse(markdown)
+    assert Cmark.global_to_commonmark() == markdown
+
+    markdown = "  * foo\n  * bar"
+    :ok = Cmark.global_parse(markdown)
+    assert Cmark.global_to_commonmark() == "  - foo\n  - bar\n"
   end
 end
