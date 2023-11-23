@@ -1,4 +1,23 @@
 defmodule C do
+  def __root__(env) do
+    config = Mix.Project.config()
+
+    if config[:app] do
+      Mix.Project.compile_path()
+    else
+      # "Mix.install script"
+      hash =
+        [Path.expand(env.file), env.module]
+        |> :erlang.term_to_binary()
+        |> :erlang.md5()
+        |> Base.encode16(case: :lower)
+
+      path = Path.join([System.tmp_dir!(), "c-" <> hash, "_build"])
+      File.mkdir_p!(path)
+      path
+    end
+  end
+
   defmacro __using__(opts) do
     quote do
       @on_load :init_nifs
@@ -9,8 +28,8 @@ defmodule C do
       import C, only: [defc: 3]
 
       @doc false
-      def init_nifs() do
-        path = Path.join([unquote(Mix.Project.compile_path()), "..", "lib", "#{__MODULE__}"])
+      def init_nifs do
+        path = Path.join([unquote(__root__(__CALLER__)), "..", "lib", "#{__MODULE__}"])
         :ok = :erlang.load_nif(path, 0)
       end
     end
@@ -31,10 +50,10 @@ defmodule C do
     defs = Module.get_attribute(env.module, :defs)
     opts = Module.get_attribute(env.module, :opts)
 
-    c_src = Path.join([Mix.Project.compile_path(), "..", "c_src", "#{env.module}.c"])
+    c_src = Path.join([__root__(env), "..", "c_src", "#{env.module}.c"])
     File.mkdir_p!(Path.dirname(c_src))
 
-    so = Path.join([Mix.Project.compile_path(), "..", "lib", "#{env.module}.so"])
+    so = Path.join([__root__(env), "..", "lib", "#{env.module}.so"])
     File.mkdir_p!(Path.dirname(so))
 
     File.write!(c_src, """

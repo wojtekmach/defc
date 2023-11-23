@@ -2,7 +2,13 @@
 
 Easily use C code in your Elixir projects.
 
-See [examples/hello/lib/hello.ex](examples/hello/lib/hello.ex).
+See:
+
+  * [examples/hello.exs](examples/hello.exs).
+
+  * [examples/hello/lib/hello.ex](examples/hello/lib/hello.ex).
+
+  * [examples/](examples/)
 
 ## License
 
