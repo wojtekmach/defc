@@ -23,7 +23,7 @@ defmodule SwiftExample do
   defc(:hello, 0, """
   extern int the_answer();
 
-  static ERL_NIF_TERM hello(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+  static ERL_NIF_TERM hello_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
   {
     return enif_make_int(env, the_answer());
   }

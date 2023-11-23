@@ -25,12 +25,38 @@ defmodule C do
       @opts unquote(opts)
       Module.register_attribute(__MODULE__, :defs, accumulate: true)
 
-      import C, only: [defc: 3]
+      import Kernel, except: [sigil_C: 2]
+      import C, only: [defc: 3, sigil_C: 2]
 
       @doc false
       def init_nifs do
         path = Path.join([unquote(__root__(__CALLER__)), "..", "lib", "#{__MODULE__}"])
         :ok = :erlang.load_nif(path, 0)
+      end
+    end
+  end
+
+  defmacro sigil_C({:<<>>, _, [binary]}, []) do
+    for binary <- String.split(binary, ~r/^static ERL_NIF_TERM\s+/m, trim: true) do
+      [[_, name, args] | _] = Regex.scan(~r/(\w+)\((.*?)\)/, binary)
+      name = String.to_atom(name)
+      name_nif = "#{name}_nif"
+      arity = length(String.split(args, ",")) - 1
+      args = Enum.map_join(0..(arity - 1)//1, &", argv[#{&1}]")
+
+      binary =
+        """
+        static ERL_NIF_TERM #{binary}
+        static ERL_NIF_TERM #{name_nif}(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) { return #{name}(env#{args}); }
+        """
+
+      quote do
+        @defs {unquote(name), unquote(arity), unquote(binary)}
+
+        def unquote(name)(unquote_splicing(Macro.generate_arguments(arity, nil))) do
+          _ = [unquote_splicing(Macro.generate_arguments(arity, nil))]
+          :erlang.nif_error("NIF library not loaded")
+        end
       end
     end
   end
@@ -63,7 +89,7 @@ defmodule C do
 
     static ErlNifFunc nif_funcs[] =
     {
-    #{Enum.map_join(defs, ", ", fn {name, arity, _} -> "{\"#{name}\", #{arity}, #{name}}" end)}
+    #{Enum.map_join(defs, ", ", fn {name, arity, _} -> "{\"#{name}\", #{arity}, #{name}_nif}" end)}
     };
 
     int c_nif_upgrade(ErlNifEnv* caller_env, void** priv_data, void** old_priv_data, ERL_NIF_TERM load_info)

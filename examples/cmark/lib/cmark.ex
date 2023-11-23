@@ -1,8 +1,8 @@
 defmodule Cmark do
-  use C, compile: "-I/opt/local/include -L/opt/local/lib -lcmark"
+  use C, compile: "-I/opt/homebrew/include -L/opt/homebrew/lib -lcmark"
 
   defc(:global_parse, 1, ~S"""
-  static ERL_NIF_TERM global_parse(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+  static ERL_NIF_TERM global_parse_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
   {
     ErlNifBinary markdown_bin;
     int cmark_options = CMARK_OPT_DEFAULT;
@@ -29,7 +29,7 @@ defmodule Cmark do
   defc(:global_to_commonmark, 0, ~S"""
   static cmark_node* global_doc;
 
-  static ERL_NIF_TERM global_to_commonmark(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+  static ERL_NIF_TERM global_to_commonmark_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
   {
     int options = 0;
     ErlNifBinary  output_binary;
@@ -67,7 +67,7 @@ defmodule Cmark do
     }
   }
 
-  static ERL_NIF_TERM markdown_to_html(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+  static ERL_NIF_TERM markdown_to_html_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
   {
     ErlNifBinary markdown_bin;
     ErlNifBinary html_bin;
