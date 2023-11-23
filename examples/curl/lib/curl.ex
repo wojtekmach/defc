@@ -1,12 +1,12 @@
 defmodule Curl do
-  use C, compile: "-l curl"
+  use DefC, compile: "-l curl"
 
   # Based on https://curl.se/libcurl/c/simple.html
 
-  defc(:test, 0, ~S"""
+  ~C"""
   #include <curl/curl.h>
 
-  static ERL_NIF_TERM test_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+  static ERL_NIF_TERM test(ErlNifEnv* env)
   {
     CURL *curl;
     CURLcode res;
@@ -34,5 +34,5 @@ defmodule Curl do
 
     return enif_make_atom(env, "ok");
   }
-  """)
+  """
 end

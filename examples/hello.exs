@@ -1,11 +1,13 @@
 Mix.install([
-  {:c, path: "#{__DIR__}/.."}
+  {:defc, path: "#{__DIR__}/.."}
 ])
 
 defmodule Hello do
-  use C
+  use DefC
 
   ~C"""
+  #include <stdio.h>
+
   static ERL_NIF_TERM hello(ErlNifEnv* env)
   {
     return enif_make_string(env, "Hello world!", ERL_NIF_LATIN1);
@@ -24,5 +26,5 @@ defmodule Hello do
   """
 end
 
-IO.inspect(Hello.hello())
-IO.inspect(Hello.add(1, 2))
+dbg(Hello.hello())
+dbg(Hello.add(1, 2))

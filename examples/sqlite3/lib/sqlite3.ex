@@ -1,5 +1,5 @@
 defmodule Sqlite3 do
-  use C, compile: "-lsqlite3"
+  use DefC, compile: "-lsqlite3"
 
   defc(:test, 0, ~S"""
   #include<sqlite3.h>

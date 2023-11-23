@@ -1,5 +1,5 @@
 defmodule Hello do
-  use C
+  use DefC
 
   ~C"""
   static ERL_NIF_TERM hello(ErlNifEnv* env)

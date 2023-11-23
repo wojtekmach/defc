@@ -1,4 +1,4 @@
-# C
+# DefC
 
 Easily use C code in your Elixir projects.
 

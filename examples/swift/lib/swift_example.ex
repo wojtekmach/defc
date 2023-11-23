@@ -8,7 +8,7 @@ defmodule SwiftExample do
   }
   """)
 
-  use C, compile: swift_flags()
+  use DefC, compile: swift_flags()
 
   @doc """
   Hello from Swift!

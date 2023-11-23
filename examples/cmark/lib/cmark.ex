@@ -1,5 +1,5 @@
 defmodule Cmark do
-  use C, compile: "-I/opt/homebrew/include -L/opt/homebrew/lib -lcmark"
+  use DefC, compile: "-I/opt/homebrew/include -L/opt/homebrew/lib -lcmark"
 
   defc(:global_parse, 1, ~S"""
   static ERL_NIF_TERM global_parse_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])

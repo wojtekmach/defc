@@ -19,7 +19,7 @@ defmodule Hello.MixProject do
 
   defp deps do
     [
-      {:c, path: "../.."}
+      {:defc, path: "../.."}
     ]
   end
 end
