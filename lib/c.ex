@@ -66,7 +66,12 @@ defmodule C do
     #{Enum.map_join(defs, ", ", fn {name, arity, _} -> "{\"#{name}\", #{arity}, #{name}}" end)}
     };
 
-    ERL_NIF_INIT(#{env.module}, nif_funcs, NULL, NULL, NULL, NULL)
+    int c_nif_upgrade(ErlNifEnv* caller_env, void** priv_data, void** old_priv_data, ERL_NIF_TERM load_info)
+    {
+        return 0;
+    }
+
+    ERL_NIF_INIT(#{env.module}, nif_funcs, NULL, NULL, c_nif_upgrade, NULL)
     """)
 
     i = Path.join([:code.root_dir(), "usr", "include"])
