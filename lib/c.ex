@@ -79,7 +79,7 @@ defmodule C do
     cc =
       case :os.type() do
         {:unix, :darwin} ->
-          "gcc -bundle -flat_namespace -undefined suppress"
+          "gcc -bundle -flat_namespace -undefined dynamic_lookup"
 
         {:unix, :linux} ->
           "gcc -shared"
