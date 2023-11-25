@@ -16,7 +16,7 @@ defmodule Hello do
     int a, b;
 
     if (!enif_get_int(env, arg0, &a) || !enif_get_int(env, arg1, &b)) {
-        return enif_make_badarg(env);
+      return enif_make_badarg(env);
     }
 
     return enif_make_int(env, a + b);
